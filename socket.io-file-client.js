@@ -26,7 +26,7 @@
 		this.socket.emit('socket.io-file::sync', {
 			id: id
 		});
-		
+
 		this.socket.on('socket.io-file::' + id + '::abort', function(data) {
 			self.emit('abort', data);
 		});
@@ -69,7 +69,7 @@
 				self.emit('error', {
 					message: "Type must be one of these: " + types.toString()
 				});
-				
+
 				self.socket.emit('socket.io-file::abort', {
 					id: self.getId(),
 					name: file.name
@@ -78,7 +78,7 @@
 			else {
 				self.socket.emit('socket.io-file::stream', {
 					id: id,
-					uploadId: uploadId, 
+					uploadId: uploadId,
 					name: file.name,
 					data: e.target.result
 				});
@@ -97,12 +97,7 @@
 		this.emit('start');
 
 		this.socket.on('socket.io-file::' + id + '::' + uploadId + '::stream', function(data) {
-			let id = data.id;
-			let uploadId = data.uploadId;
 
-			data.id = id;
-			data.uploadId = uploadId;
-			
 			self.emit('stream', data);
 
 			if(data.uploaded >= self.sendingFiles[uploadId].size) return;
@@ -123,8 +118,6 @@
 			self.fileReaders[uploadId].readAsBinaryString(newFile);
 		});
 		this.socket.on('socket.io-file::' + id + '::' + uploadId + '::complete', function(data) {
-			let id = data.id;
-			let uploadId = data.uploadId;
 
 			self.emit('complete', data);
 			delete self.fileReaders[uploadId];
@@ -147,7 +140,7 @@
 		}
 		else if(typeof fn === 'undefined') {
 			if(this.ev[evName]) {
-				delete this.ev[evName]; 
+				delete this.ev[evName];
 			}
 		}
 		else {
@@ -193,7 +186,7 @@
 	};
 	SocketIOFileClient.prototype.destroy = function() {
 		this.abort();
-		
+
 		this.off();	// remove all listeners
 		this.socket.off('socket.io-file::start');
 		this.socket.off('socket.io-file::stream');
